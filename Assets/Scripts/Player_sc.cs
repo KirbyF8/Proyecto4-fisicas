@@ -12,27 +12,71 @@ public class Player_s : MonoBehaviour
 
     private bool hasPowerUp;
     [SerializeField] private float powerUpForce = 100f;
+    [SerializeField] private GameObject[] powerUpIndicators; // 3 1 2
 
+    private int Lives = 3;
+    private bool GameOver = false;
+    private Vector3 initialPosition;
 
+    private SpawManage_sc spawnmanager;
     private void Awake()
     {
+        GameOver = false;
+        Lives = 3;
         playerRigidbody = GetComponent<Rigidbody>();
         hasPowerUp = false;
+        initialPosition = Vector3.zero;
     }
 
     private void Update()
     {
-        /* Parar en seco
-        if (Mathf.Abs(verticalInput) < 0.01f)
+       
+
+        if (GameOver)
         {
-            playerRigidbody.velocity = Vector3.zero;
+            return;
         }
-        */
+        // Movement();
         verticalInput = Input.GetAxis("Vertical");
 
         playerRigidbody.AddForce(focalpoint_go.transform.forward * PlayerSpeed * verticalInput, ForceMode.Force);
+
+        if (transform.position.y < -3f)
+        {
+            Lives--;
+            if (Lives < 0)
+            {
+                //Game Over
+                GameOver = true;
+            } 
+            else
+            {
+                transform.position = initialPosition;
+                playerRigidbody.velocity = Vector3.zero;
+                StartCoroutine(Invulberavility());
+            }
+            
+        }
+    }
+    
+    private void Movement()
+    {
+        /* Parar en seco
+         if (Mathf.Abs(verticalInput) < 0.01f)
+         {
+             playerRigidbody.velocity = Vector3.zero;
+         }
+         */
+       
     }
 
+    private IEnumerator Invulberavility()
+    {
+        playerRigidbody.constraints = RigidbodyConstraints.FreezeAll;//RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
+        yield return new WaitForSeconds(0.5f);
+        playerRigidbody.constraints = RigidbodyConstraints.None;
+    }
+   
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("PowerUp"))
@@ -40,7 +84,7 @@ public class Player_s : MonoBehaviour
             hasPowerUp = true;
 
             StartCoroutine(PowerUpCount());
-            
+
             Destroy(other.gameObject);
         }
     }
@@ -56,10 +100,41 @@ public class Player_s : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        HidePowerUpIndicators();
+        spawnmanager = FindObjectOfType<SpawManage_sc>();
+    }
+    
     private IEnumerator PowerUpCount()
     {
         
-        yield return new WaitForSeconds(6);
+        foreach (GameObject indicator in powerUpIndicators)
+        {
+            indicator.SetActive(true);
+        }
+
+        for (int i = 0; i < powerUpIndicators.Length; i++)
+        {
+            
+            yield return new WaitForSeconds(2);
+            powerUpIndicators[i].SetActive(false);
+        }
+
+        spawnmanager.PowerUpEnd();
         hasPowerUp = false;
+    }
+   
+    private void HidePowerUpIndicators()
+    {
+        foreach (GameObject indicator in powerUpIndicators)
+        {
+            indicator.SetActive(false);
+        }
+    }
+    
+    public bool GetGameOver()
+    {
+        return GameOver;
     }
 }

@@ -15,40 +15,67 @@ public class SpawManage_sc : MonoBehaviour
     public float Enemy_Limiter;
     private bool PowerUpE;
 
-    [SerializeField] private float startDelay = 2f;
-    private float spawnInterval = 2.4f;
-   
-    // Start is called before the first frame update
+    
+    private int EnemyCount;
+    private int EnemyInWave = 1;
+
+    private Player_s Player;
 
     private void Start()
     {
-        Enemy_Limiter = 3;
+        WaveManager(EnemyInWave);
         PowerUpE = true;
-        InvokeRepeating("SpawnEnemy", startDelay, spawnInterval);
-        InvokeRepeating("SpawnPowerUp", startDelay * 2, spawnInterval);
+       
+
+        Player = FindObjectOfType<Player_s>();
     }
+    private void Update()
+    {
+        // EnemyCount = FindObjectsOfType<Enemy_sc>().Length;
+        if (Player.GetGameOver())
+        {
+            return;
+        }
+
+        if (EnemyCount <= 0)
+        {
+            EnemyInWave++;
+            WaveManager(EnemyInWave);
+        }
+    }
+
     private void SpawnEnemy()
     {
         PlacementX = Random.Range(-cameraLimitx, cameraLimitx);
         PlacementY = Random.Range(-cameraLimity, cameraLimity);
-        if (Enemy_Limiter >= 0)
-        {
-            Instantiate(Enemy, new Vector3(PlacementX, 0, PlacementY), Quaternion.Euler(0, 0, 0));
-            Enemy_Limiter--;
-            
-        }
+        Instantiate(Enemy, new Vector3(PlacementX, 0, PlacementY), Quaternion.Euler(0, 0, 0));
     }
 
-    private void SpawnPowerUp()
+   
+
+    public void EnemyDestroyed()
     {
-        PlacementX = Random.Range(-cameraLimitx, cameraLimitx);
-        PlacementY = Random.Range(-cameraLimity, cameraLimity);
+        EnemyCount--;
+    }
+
+    public void PowerUpEnd()
+    {
         
-       
-        if (PowerUpE)
+        PowerUpE = true;
+    }
+
+    private void WaveManager(int Enemies)
+    {
+        for (int i = 0; i < Enemies; i++)
         {
-            Instantiate(PowerUp, new Vector3(PlacementX, 0, PlacementY), Quaternion.Euler(0, 0, 0));
-            PowerUpE = false;
+           
+            SpawnEnemy();
+            EnemyCount++;
+            if (PowerUpE)
+            {
+                Instantiate(PowerUp, new Vector3(PlacementX, 0, PlacementY), Quaternion.Euler(0, 0, 0));
+                PowerUpE = false;
+            }
         }
     }
 }
