@@ -11,7 +11,7 @@ public class Player_s : MonoBehaviour
     [SerializeField] private GameObject focalpoint_go;
 
     private bool hasPowerUp;
-    [SerializeField] private float powerUpForce = 100f;
+    [SerializeField] private float powerUpForce = 200f;
     [SerializeField] private GameObject[] powerUpIndicators; // 3 1 2
 
     private int Lives = 3;
