@@ -86,4 +86,13 @@ public class SpawManage_sc : MonoBehaviour
             }
         }
     }
+
+    public void ResetValues()
+    {
+        Player.ResetValues();
+        EnemyInWave = 1;
+        EnemyCount = 1;
+        SpawnEnemy();
+        
+    }
 }

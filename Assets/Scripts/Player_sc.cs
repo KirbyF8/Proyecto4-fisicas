@@ -142,4 +142,14 @@ public class Player_s : MonoBehaviour
     {
         return GameOver;
     }
+
+    public void ResetValues()
+    {
+        transform.position = initialPosition;
+        playerRigidbody.velocity = Vector3.zero;
+        Lives = 3;
+        GameOver = false;
+        hasPowerUp = false;
+
+    }
 }

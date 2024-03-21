@@ -25,16 +25,14 @@ public class UI_sc : MonoBehaviour
     private void Start()
     {
 
+       
+
         Time.timeScale = 0;
         SpawManager = FindObjectOfType<SpawManage_sc>();
-        if (SpawManager == null)
-        {
-            Debug.LogError("SpawManager is null");
-        }
-        else
-        {
-            Debug.Log("SpawManager found: " + SpawManager.name);
-        }
+
+        SpawManager.GameHasStarted = false;
+
+       
 
         HideGameOverPanel();
         HidePauseMenuPanel();
@@ -48,6 +46,7 @@ public class UI_sc : MonoBehaviour
             if (pauseMenu.activeSelf)
             {
                 HidePauseMenuPanel();
+                SpawManager.GameHasStarted = true;
             }
             else if(!pauseMenu.activeSelf && SpawManager.GameHasStarted == true)
             {
@@ -88,14 +87,16 @@ public class UI_sc : MonoBehaviour
     }
     public void HidePauseMenuPanel()
     {
-        SpawManager.GameHasStarted = true;
+        
         Time.timeScale = 1;
         pauseMenu.SetActive(false);
     }
 
     public void Reset()
     {
+        
         SceneManager.LoadScene(0);
+        SpawManager.ResetValues();
     }
 
 
@@ -105,6 +106,12 @@ public class UI_sc : MonoBehaviour
         
     }
 
+    public void ResetToZero()
+    {
+        SpawManager.ResetValues();
+        HideGameOverPanel();
+        HidePauseMenuPanel();
 
+    }
 
 }
