@@ -18,6 +18,7 @@ public class Player_s : MonoBehaviour
     private bool GameOver = false;
     private Vector3 initialPosition;
 
+    private UI_sc UIManager;
     private SpawManage_sc spawnmanager;
     private void Awake()
     {
@@ -26,6 +27,14 @@ public class Player_s : MonoBehaviour
         playerRigidbody = GetComponent<Rigidbody>();
         hasPowerUp = false;
         initialPosition = Vector3.zero;
+    }
+
+    private void Start()
+    {
+        HidePowerUpIndicators();
+        spawnmanager = FindObjectOfType<SpawManage_sc>();
+        UIManager = FindObjectOfType<UI_sc>();
+
     }
 
     private void Update()
@@ -47,6 +56,7 @@ public class Player_s : MonoBehaviour
             if (Lives < 0)
             {
                 //Game Over
+                UIManager.ShowGameOverPanel();
                 GameOver = true;
             } 
             else
@@ -100,12 +110,7 @@ public class Player_s : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        HidePowerUpIndicators();
-        spawnmanager = FindObjectOfType<SpawManage_sc>();
-    }
-    
+
     private IEnumerator PowerUpCount()
     {
         

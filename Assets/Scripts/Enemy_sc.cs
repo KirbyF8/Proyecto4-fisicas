@@ -43,9 +43,14 @@ public class Enemy_sc : MonoBehaviour
 
     private void GoToPlayer()
     {
-        Vector3 direction = (player_go.transform.position - transform.position).normalized;
+        if (spawnmanager.GameHasStarted) 
+        
+        {
+            Vector3 direction = (player_go.transform.position - transform.position).normalized;
 
-        enemyRigidbody.AddForce(direction * EnemySpeed, ForceMode.Force);
+            enemyRigidbody.AddForce(direction * EnemySpeed, ForceMode.Force);
+        }
+      
 
     }
 

@@ -14,16 +14,18 @@ public class SpawManage_sc : MonoBehaviour
 
     public float Enemy_Limiter;
     private bool PowerUpE;
-
+    public bool GameHasStarted;
     
-    private int EnemyCount;
+    public int EnemyCount;
     private int EnemyInWave = 1;
 
     private Player_s Player;
 
     private void Start()
     {
-        WaveManager(EnemyInWave);
+
+        GameHasStarted = false;
+
         PowerUpE = true;
        
 
@@ -31,13 +33,13 @@ public class SpawManage_sc : MonoBehaviour
     }
     private void Update()
     {
-        // EnemyCount = FindObjectsOfType<Enemy_sc>().Length;
+        //EnemyCount = FindObjectsOfType<Enemy_sc>().Length;
         if (Player.GetGameOver())
         {
             return;
         }
 
-        if (EnemyCount <= 0)
+        if (EnemyCount <= 0 && GameHasStarted == true)
         {
             EnemyInWave++;
             WaveManager(EnemyInWave);
@@ -51,6 +53,11 @@ public class SpawManage_sc : MonoBehaviour
         Instantiate(Enemy, new Vector3(PlacementX, 0, PlacementY), Quaternion.Euler(0, 0, 0));
     }
 
+    public void GameStart()
+    {
+        GameHasStarted = true;
+        WaveManager(EnemyInWave);
+    }
    
 
     public void EnemyDestroyed()
@@ -71,6 +78,7 @@ public class SpawManage_sc : MonoBehaviour
            
             SpawnEnemy();
             EnemyCount++;
+            
             if (PowerUpE)
             {
                 Instantiate(PowerUp, new Vector3(PlacementX, 0, PlacementY), Quaternion.Euler(0, 0, 0));
